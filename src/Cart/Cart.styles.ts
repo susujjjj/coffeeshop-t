@@ -10,10 +10,22 @@ export const PayMethodBox = styled.div`
   justify-content: space-around;
 `;
 
+
 export const CashPayBtn = styled.button`
-  width: 500px;
-  padding: 20px;
-  margin-top: 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  gap: 0.479rem;
+  width: 100%;
+  height: 56px;
+  color: white;
+  background-color:  black;
+  border-radius: 4px;
+  padding: 0 1rem;
+  border: none;
+  cursor: pointer;
 `;
 
 export const FlexBox = styled.div`

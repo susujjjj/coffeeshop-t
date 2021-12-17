@@ -13,6 +13,7 @@ import {
 import { CartItemType } from "../App";
 import { Radio } from "antd";
 import {coupons} from '../coupons';
+import Loader from "../Loder";
 
 type Props = {
   cartItems: CartItemType[];
@@ -26,14 +27,7 @@ const Cart: React.FC<Props> = ({ cartItems, addToCart, removeFromCart }) => {
   const [openCashPayment, setOpenCashPayment] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openAddDiscountBox, setOpenAddDiscountBox] = useState<boolean>(false);
-
-
-    // let totalCount = 0;
-    // if (cartItems) {
-    //   cartItems.map((p: any) => {
-    //     totalCount += p.price;
-    //   });
-    // }
+ const [loading, setLoading] = React.useState(Boolean);
 
   console.log(defaultChecked, "defaultChecked");
 
@@ -111,10 +105,7 @@ const Cart: React.FC<Props> = ({ cartItems, addToCart, removeFromCart }) => {
     );
 
      const addDiscountHandler = () => {
-      //  setOpenAddDiscountBox(!openAddDiscountBox);
-      //  setOpen(false);
-       setOpenCashPayment(false);
-       setOpenAddDiscountBox(true)
+      setOpenAddDiscountBox(!openAddDiscountBox);
      };
 
 
@@ -124,8 +115,12 @@ const Cart: React.FC<Props> = ({ cartItems, addToCart, removeFromCart }) => {
   };
 
   const cashPayment = () => {
-    alert("현금결제 완료");
-    window.location.replace("/");
+      setLoading(true);
+      setTimeout(() => {
+      setLoading(false);
+        alert("현금결제 완료");
+        window.location.replace("/");
+      }, 1000);
   };
 
   let totalDiscountPrice = 0;
@@ -150,86 +145,98 @@ const Cart: React.FC<Props> = ({ cartItems, addToCart, removeFromCart }) => {
       });
     }
 
-  
   return (
     <Wrapper>
-      <h2>주문 내역</h2>
-      {cartItems.length === 0 ? <p>주문 내역이 없습니다.</p> : null}
-      {cartItems.map((item) => (
-        <CartItem
-          key={item.id}
-          item={item}
-          addToCart={addToCart}
-          removeFromCart={removeFromCart}
-        />
-      ))}
-      <h2>{`결제:${calculateTotal(cartItems)}`}</h2>
-      <h3>{takeOutNoticeWord}</h3>
+      <>
+        <h2>주문 내역</h2>
+        {cartItems.length === 0 ? <p>주문 내역이 없습니다.</p> : null}
+        {cartItems.map((item) => (
+          <CartItem
+            key={item.id}
+            item={item}
+            addToCart={addToCart}
+            removeFromCart={removeFromCart}
+          />
+        ))}
+        <h2>{`결제:${calculateTotal(cartItems)}`}</h2>
+        <h3>{takeOutNoticeWord}</h3>
 
-      <div className="paymentBox">
-        <CashPayBtnSmall onClick={payCash}>현금결제</CashPayBtnSmall>
-        <CardPayBtnSmall onClick={payCard}>카드결제</CardPayBtnSmall>
+        <div className="paymentBox">
+          <CashPayBtnSmall onClick={payCash}>현금결제</CashPayBtnSmall>
+          <CardPayBtnSmall onClick={payCard}>카드결제</CardPayBtnSmall>
 
-        {open && (
-          <CardCouponPayBox>
-            <Radio.Group
-              value={defaultChecked}
-              buttonStyle="solid"
-              style={{ margin: "25px 50px 0 60px" }}
-              onChange={handleChange}
-            >
-              <Radio value={"unApplied"}>쿠폰 미적용</Radio>
-              <Radio value={"5% 할인"}>5% 할인 쿠폰</Radio>
-              <Radio value={"7% 할인"}>7% 할인 쿠폰</Radio>
-              <Radio value={"10% 할인"}>10% 할인 쿠폰</Radio>
-              <p>{`할인된 가격 : ${discountPrice}`}</p>
-            </Radio.Group>
-            <PayForCardBtn onClick={cardPayment}>카드 결제하기</PayForCardBtn>
-          </CardCouponPayBox>
-        )}
+          {open && (
+            <CardCouponPayBox>
+              <Radio.Group
+                value={defaultChecked}
+                buttonStyle="solid"
+                style={{ margin: "25px 50px 0 60px" }}
+                onChange={handleChange}
+              >
+                <Radio value={"unApplied"}>쿠폰 미적용</Radio>
+                <Radio value={"5% 할인"}>5% 할인 쿠폰</Radio>
+                <Radio value={"7% 할인"}>7% 할인 쿠폰</Radio>
+                <Radio value={"10% 할인"}>10% 할인 쿠폰</Radio>
+                <p>{`할인된 가격 : ${discountPrice}`}</p>
+              </Radio.Group>
+              <PayForCardBtn onClick={cardPayment}>카드 결제하기</PayForCardBtn>
+            </CardCouponPayBox>
+          )}
 
-        {openCashPayment && (
-          <div>
-            <Radio.Group
-              value={defaultChecked}
-              buttonStyle="solid"
-              style={{ margin: "25px 50px 0 60px" }}
-              onChange={handleChangeCashPayment}
-            >
-              <Radio value={"unApplied"}>쿠폰 미적용</Radio>
-              <Radio value={"5% 할인"}>5% 할인 쿠폰</Radio>
-              <Radio value={"7% 할인"}>7% 할인 쿠폰</Radio>
-              <Radio value={"10% 할인"}>10% 할인 쿠폰</Radio>
-              <FlexBox>
-                {defaultChecked === "unApplied" ? (
-                  <h3>{`결제 금액: ${calculateTotal(cartItems)} 원`}</h3>
-                ) : (
-                  <h3>{`결제 금액 : ${discountPrice} 원`}</h3>
-                )}
-
-                <GetDctBtn onClick={addDiscountHandler}>
-                  <p>추가 5% 할인 받기</p>
-                </GetDctBtn>
-              </FlexBox>
-            </Radio.Group>
-          </div>
-        )}
-        <div>
-          {openAddDiscountBox && (
+          {openCashPayment && (
             <div>
-              <p> 쿠폰 할인적용 :{totalDiscountPrice}원 </p>
-              <p> 추가 5% 할인적용 : {add5discount}원 </p>
-              <h2>
-                최종 결제금액 :
-                {totalCount - (totalDiscountPrice + add5discount)}원
-              </h2>
+              <Radio.Group
+                value={defaultChecked}
+                buttonStyle="solid"
+                style={{ margin: "25px 50px 0 60px" }}
+                onChange={handleChangeCashPayment}
+              >
+                <Radio value={"unApplied"}>쿠폰 미적용</Radio>
+                <Radio value={"5% 할인"}>5% 할인 쿠폰</Radio>
+                <Radio value={"7% 할인"}>7% 할인 쿠폰</Radio>
+                <Radio value={"10% 할인"}>10% 할인 쿠폰</Radio>
+                <FlexBox>
+                  {defaultChecked === "unApplied" ? (
+                    <h3>{`결제 금액: ${calculateTotal(cartItems)} 원`}</h3>
+                  ) : (
+                    <h3>{`결제 금액 : ${discountPrice} 원`}</h3>
+                  )}
+
+                  <GetDctBtn onClick={addDiscountHandler}>
+                    <p>추가 5% 할인 받기</p>
+                  </GetDctBtn>
+                </FlexBox>
+              </Radio.Group>
             </div>
           )}
+
+          {openCashPayment && (
+            <>
+              <div>
+                {openAddDiscountBox && (
+                  <div>
+                    <p> 쿠폰 할인적용 :{totalDiscountPrice}원 </p>
+                    <p> 추가 5% 할인적용 : {add5discount}원 </p>
+                    <h2>
+                      최종 결제금액 :
+                      {totalCount - (totalDiscountPrice + add5discount)}원
+                    </h2>
+                  </div>
+                )}
+              </div>
+                <CashPayBtn onClick={cashPayment}>
+                  {loading ? (
+                  <span>
+                    <Loader type="spin" color="white" message="" />
+                  </span>
+                  ) : (
+                  <span>현금 결제하기 </span>
+                )}
+                </CashPayBtn>
+            </>
+          )}
         </div>
-        <CashPayBtn onClick={cashPayment}>
-          <span>현금 결제하기 </span>
-        </CashPayBtn>
-      </div>
+      </>
     </Wrapper>
   );
 };
