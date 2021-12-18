@@ -1,24 +1,16 @@
 import { useState } from 'react';
-import { useQuery } from 'react-query';
-// Components
-import Item from './Item/Item';
 import Cart from './Cart/Cart';
-import Drawer from '@material-ui/core/Drawer';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Grid from '@material-ui/core/Grid';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import Badge from '@material-ui/core/Badge';
-// Styles
-import { Wrapper, StyledButton } from './App.styles';
-import  { data } from './arrayData.js'
-// Types
+import { Wrapper, Menus, MenuBox, StyledButton } from './App.styles';
+import { data } from './arrayData';
+
 export type CartItemType = {
   id: number;
-  category: string;
-  description: string;
-  image: string;
-  price: number;
   title: string;
+  price: number;
+  image: string;
+  category: string;
   amount: number;
 };
 
@@ -26,12 +18,8 @@ const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([] as CartItemType[]);
 
-  console.log(data);
-
-  console.log(cartItems, "cartItems ??");
-
   const getTotalItems = (items: CartItemType[]) =>
-    items.reduce((ack: number, item) => ack + item.amount, 0);
+    items.reduce((nums: number, item) => nums + item.amount, 0);
 
   const handleAddToCart = (clickedItem: any) => {
     setCartItems(prev => {
@@ -42,7 +30,7 @@ const App = () => {
         return prev.map(item =>
           item.id === clickedItem.id
             ? { ...item, amount: item.amount + 1 }
-            : item
+            : item,
         );
       }
       // First time the item is added
@@ -59,27 +47,24 @@ const App = () => {
         } else {
           return [...ack, item];
         }
-      }, [] as CartItemType[])
+      }, [] as CartItemType[]),
     );
   };
 
   return (
     <Wrapper>
-      <Grid container spacing={3}>
-        {data?.map((item) => (
-          <Grid item key={item.id} xs={12} sm={4}>
-            <div> {item.id}</div>
+      <Menus>
+        {data?.map(item => (
+          <MenuBox>
             <div>
               <img src={item.image} />
             </div>
             <div>{item.title}</div>
             <div>{item.price}</div>
-            <button onClick={() => handleAddToCart(item)}> 추가</button>
-            {/* <Item item={item} handleAddToCart={handleAddToCart} /> */}
-          </Grid>
+            <button onClick={() => handleAddToCart(item)}>추가</button>
+          </MenuBox>
         ))}
-      </Grid>
-
+      </Menus>
       <StyledButton onClick={() => setCartOpen(true)}>
         <Badge badgeContent={getTotalItems(cartItems)} color="error">
           <AddShoppingCartIcon />

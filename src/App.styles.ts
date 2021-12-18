@@ -5,6 +5,14 @@ export const Wrapper = styled.div`
   margin: 40px;
 `;
 
+export const Menus = styled.div`
+  display: flex;
+`
+
+export const MenuBox = styled.div`
+  width: 17rem;
+`
+
 export const StyledButton = styled(IconButton)`
   position: fixed;
   z-index: 100;

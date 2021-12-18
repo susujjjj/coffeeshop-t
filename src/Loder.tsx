@@ -19,10 +19,11 @@ const Span = styled.div`
 
 interface LoaderProps {
   type: any;
-  color: any;
-  message: any;
+  color: string;
+  message: string;
 }
 const Loader = ({ type, color, message }: LoaderProps): React.ReactElement => {
+  console.log(type, 'type? ');
   return (
     <>
       <LoadingBox>

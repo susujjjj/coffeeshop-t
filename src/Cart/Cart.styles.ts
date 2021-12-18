@@ -17,6 +17,7 @@ export const CashPayBtn = styled.button`
   justify-content: center;
   align-items: center;
   margin-top: 30px;
+  margin-left: 10px;
   gap: 0.479rem;
   width: 100%;
   height: 56px;
@@ -67,13 +68,18 @@ export const CardCouponPayBox = styled.div`
   border: 1px solid pink;
 `
 
-export const PayForCardBtn = styled.div`
-  width: 110px;
+export const PayForCardBtn = styled.button`
+  width: 160px;
   height: 30px;
   margin-left: 10px;
   border: none;
   color: white;
   background-color: black;
   cursor: pointer;
+  
 `
 
+export const CashPaymentBox = styled.div`
+ margin-top: 20px;
+ border-bottom: 1px solid lightpink;
+`
